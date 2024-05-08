@@ -1,6 +1,7 @@
 import torch as th
 import torch.nn.functional as F
 from torch import nn
+import math
 
 
 class MultiLinear(nn.Module):
@@ -30,7 +31,7 @@ class xLSTM(nn.Module):
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.embedding_dim = embedding_dim
-        self.scale = np.sqrt(hidden_size)
+        self.scale = math.sqrt(hidden_size)
         
         self.hidden_state = None
         self.cell_state = None
