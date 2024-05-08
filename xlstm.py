@@ -60,7 +60,7 @@ class xLSTM(nn.Module):
         self.m = m
         self.cell_state = (f.unsqueeze(-1).unsqueeze(-1)*self.cell_state) + i.unsqueeze(-1).unsqueeze(-1)*th.einsum('bli, blj -> blij', v, k)
         self.n = f.unsqueeze(-1)*self.n + i.unsqueeze(-1)*k
-        self.hidden_state = o*th.einsum('blij, bli -> blj', self.cell_state, q)
+        self.hidden_state = o*th.einsum('blij, bli -> blj', self.cell_state, q)/th.clamp(th.sum(self.n*q, dim=-1), 1, th.inf).unsqueeze(-1)
     
     def forward(self, input):
         input = input.to(self.device)
