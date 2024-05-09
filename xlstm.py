@@ -28,7 +28,7 @@ class xLSTM(nn.Module):
         self.input_size = input_size
         self.hidden_size = hidden_size
         self.embedding_dim = embedding_dim
-        self.scale = math.sqrt(hidden_size)
+        self.scale = math.sqrt(embedding_dim)
         
         self.hidden_state, self.cell_state = (th.zeros((1, self.hidden_size, self.embedding_dim), dtype=th.float32).to(self.device), 
                                               th.zeros((1, self.hidden_size, self.embedding_dim, self.embedding_dim), dtype=th.float32).to(self.device))
