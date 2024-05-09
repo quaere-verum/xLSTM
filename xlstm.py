@@ -30,10 +30,10 @@ class xLSTM(nn.Module):
         self.embedding_dim = embedding_dim
         self.scale = math.sqrt(hidden_size)
         
-        self.hidden_state = None
-        self.cell_state = None
-        self.m = None
-        self.n = None
+        self.hidden_state, self.cell_state = (th.zeros((1, self.hidden_size, self.embedding_dim), dtype=th.float32).to(self.device), 
+                                              th.zeros((1, self.hidden_size, self.embedding_dim, self.embedding_dim), dtype=th.float32).to(self.device))
+        self.m, self.n = (th.zeros((1, self.hidden_size), dtype=th.float32).to(self.device), 
+                          th.zeros((1, self.hidden_size, self.embedding_dim), dtype=th.float32).to(self.device))
         
     @th.jit.export
     def reset_states(self, batch_size: int):
@@ -58,7 +58,7 @@ class xLSTM(nn.Module):
         self.n = f.unsqueeze(-1)*self.n + i.unsqueeze(-1)*k
         self.hidden_state = o*th.einsum('blij, bli -> blj', self.cell_state, q)/th.clamp(th.sum(self.n*q, dim=-1), 1, th.inf).unsqueeze(-1)
     
-    def forward(self, input):
+    def forward(self, input: th.Tensor):
         input = input.to(self.device)
         self.reset_states(len(input))
         for t in range(input.shape[1]):
