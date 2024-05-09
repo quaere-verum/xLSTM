@@ -16,7 +16,6 @@ class MultiLinear(nn.Module):
     def forward(self, input):
         return th.einsum(self.equation, input, self.weight) + self.bias
 
-@th.jit.script
 class xLSTM(nn.Module):
     def __init__(self, input_size, hidden_size, embedding_dim, device=th.device('cuda')):
         super().__init__()
