@@ -2,10 +2,11 @@ import torch as th
 import torch.nn.functional as F
 from torch import nn
 import math
+from typing import Tuple
 
 
 class MultiLinear(nn.Module):
-    def __init__(self, shape, equation, dtype=th.float32, bias_shape=None):
+    def __init__(self, shape: Tuple[int], equation: str, dtype: th.dtype = th.float32, bias_shape=None: Tuple[int]):
         super().__init__()
         self.weight = nn.Parameter(th.empty(shape, dtype=dtype))
         self.bias = nn.Parameter(th.empty(bias_shape, dtype=dtype))
@@ -13,7 +14,7 @@ class MultiLinear(nn.Module):
         for param in self.parameters():
             nn.init.xavier_normal_(param)
         
-    def forward(self, input):
+    def forward(self, input: th.Tensor):
         return th.einsum(self.equation, input, self.weight) + self.bias
 
 class xLSTM(nn.Module):
@@ -44,7 +45,7 @@ class xLSTM(nn.Module):
                           th.zeros((batch_size, self.hidden_size, self.embedding_dim), dtype=th.float32).to(self.device))
         
     @th.jit.export
-    def _forward_step(self, input):
+    def _forward_step(self, input: th.Tensor):
         linear_gates = self.linear_gates(input)
         multilinear_gates = self.multilinear_gates(input)
         o_, v, k, q = th.chunk(multilinear_gates, 4, dim=1)
