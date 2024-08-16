@@ -2,11 +2,11 @@ import torch as th
 import torch.nn.functional as F
 from torch import nn
 import math
-from typing import Tuple
+from typing import Tuple, Union
 
 
 class MultiLinear(nn.Module):
-    def __init__(self, shape: Tuple[int], equation: str, dtype: th.dtype = th.float32, bias_shape=None: Tuple[int]):
+    def __init__(self, shape: Tuple[int], equation: str, bias_shape: Tuple[int, ...], dtype: th.dtype = th.float32):
         super().__init__()
         self.weight = nn.Parameter(th.empty(shape, dtype=dtype))
         self.bias = nn.Parameter(th.empty(bias_shape, dtype=dtype))
